@@ -1,5 +1,5 @@
 
-    const socket = io('http://localhost:3000');
+    const socket = io('https://react-chat-nodejs.herokuapp.com/');
 
     // refs to the form items
     const formulario = document.querySelector('#miFormulario');
