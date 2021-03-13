@@ -5,19 +5,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <title>SocketIO</title>
 </head>
 
 <body>
 
+    <div class="container">
+        <hr>
+
+        <form action="" id="miFormulario">
+            <div class="row">
+                <div class="col-8">
+                    <input type="text" id="txtMensaje" class="form-control" placeholder="Mensaje">
+                </div>
+                <div class="col-4">
+                    <button type="submit"" class=" btn btn-primary">
+                        Enviar
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="row">
+            <div class="col">
+                <ul id="misMensajes">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
 
     <script src="socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
 
-    <script>
-        io('http://localhost:3000');
-
-        
-    </script>
 </body>
 
 </html>

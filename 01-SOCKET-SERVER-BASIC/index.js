@@ -1,26 +1,40 @@
 
-// express server
-const express = require('express');
-const app = express();
+const Server = require('./models/server');
 
-// Sockets server
-const server = require('http').createServer(app);
+require('dotenv').config();
 
-// settings sockets server
-const io = require('socket.io')(server);
+const server = new Server();
 
-const port = process.env.PORT || 3000;
+server.execute();
 
 
-// public dir 
-
-app.use(express.static(__dirname + '/public'));
 
 
-io.on('connection', () => {
-    console.log('client conected');
-})
 
-server.listen(port, () => {
-    console.log(`Server on port http://localhost:${port}`);
-});
+
+
+// io.on('connection', (socket) => {
+
+//     // socket.emit('wellcome_message', {
+//     //     msg: 'wellcome to server',
+//     //     date: new Date()
+//     // });
+
+
+//     socket.on('client_message', (payload) => {
+//         console.log(payload);
+//     });
+
+//     socket.on('message-to-server', (data) => {
+//         console.log(data);
+
+//         //? emit message only one cliente
+//         //? socket.emit('message-from-server',data);
+
+//         //* emit message all clientes
+//         io.emit('message-from-server', data);
+
+
+//     });
+// })
+
