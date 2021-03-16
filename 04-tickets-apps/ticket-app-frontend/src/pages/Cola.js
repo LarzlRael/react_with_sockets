@@ -1,84 +1,41 @@
-import React from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 
 import { Col, Row, Typography, List, Card, Tag, Divider } from 'antd'
 import { useHideMenu } from '../hooks/userHideMenu';
+import { SocketContext } from '../context/SocketContext';
+import { getUltimos } from '../helpers/getUltimos';
 
 const { Title, Text } = Typography;
 
 export const Cola = () => {
 
-    const data = [
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-        {
-            ticketNo: 33,
-            escritorio: 3,
-            agente: 'Fernando Herrara xd'
-        },
-    ]
-
     useHideMenu(true);
+
+    const { socket } = useContext(SocketContext);
+    const [tickets, setTickets] = useState([]);
+
+    useEffect(() => {
+
+        socket.on('ticket-asigando', (asignados) => {
+            setTickets(asignados);
+        })
+        return () => {
+            socket.off('ticket-asigando');
+        }
+    }, [socket]);
+
+    useEffect(() => {
+
+        getUltimos().then(tickets => setTickets(tickets));
+    }, [])
 
     return (
         <>
-            <Title level={1}>Atendiendo al clienet</Title>
+            <Title level={1}>Atendiendo al cliente</Title>
             <Row>
                 <Col span={12}>
                     <List
-                        dataSource={data.slice(0, 3)}
+                        dataSource={tickets.slice(0, 3)}
                         renderItem={item => (
                             <List.Item>
                                 <Card
@@ -87,7 +44,9 @@ export const Cola = () => {
                                         <Tag color="volcano">{item.agente}</Tag>,
                                         <Tag color="magenta">Escritorio : {item.escritorio}</Tag>
                                     ]}
-                                />
+                                >
+                                    <Title>No. {item.numero}</Title>
+                                </Card>
                             </List.Item>
                         )}
                     />
@@ -95,16 +54,16 @@ export const Cola = () => {
                 <Col span={12}>
                     <Divider>Historial</Divider>
                     <List
-                        dataSource={data.slice(3)}
+                        dataSource={tickets.slice(3)}
                         renderItem={item => (
                             <List.Item>
                                 <List.Item.Meta
-                                    title={`Ticket No. ${item.ticketNo}`}
+                                    title={`Ticket No. ${item.numero}`}
                                     description={
                                         <>
                                             <Text type="secondary">En el escritorio</Text>
 
-                                            <Tag color="magenta">{item.ticketNo}</Tag>
+                                            <Tag color="magenta">{item.numero}</Tag>
 
                                             <Text type="secondary">Agente : </Text>
 

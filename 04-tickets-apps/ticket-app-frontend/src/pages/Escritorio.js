@@ -1,7 +1,8 @@
 import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Button, Col, Divider, Row, Typography } from 'antd'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Redirect, useHistory } from 'react-router';
+import { SocketContext } from '../context/SocketContext';
 import { getUserStorage } from '../helpers/getUsuarioStorage';
 import { useHideMenu } from '../hooks/userHideMenu';
 
@@ -12,19 +13,25 @@ export const Escritorio = () => {
     useHideMenu(false);
 
     const [usuario] = useState(getUserStorage);
+    const { socket } = useContext(SocketContext);
+    const [ticket, setTicket] = useState(null);
     const history = useHistory();
 
 
     const siguienteTicket = () => {
 
+        socket.emit('siguient-ticket-trabajar', usuario, (ticket) => {
+            setTicket(ticket);
+        });
     }
 
     if (!usuario.agente || !usuario.escritorio) {
         return <Redirect to="ingresar" />
     }
+
     const salir = () => {
 
-        // cleatn the local storage
+        // clean the local storage
         localStorage.clear();
         history.replace('/ingresar');
 
@@ -52,27 +59,32 @@ export const Escritorio = () => {
 
             <Divider />
 
-            <Row>
-                <Col>
-                    <Text>Esta atendiendo el ticket numero </Text>
-                    <Text
-                        style={{ fontSize: 30 }}
-                    >
-                        55
-                    </Text>
-                </Col>
-            </Row>
+            { ticket &&
+
+                <Row>
+                    <Col>
+                        <Text>Esta atendiendo el ticket numero </Text>
+                        <Text
+                            style={{ fontSize: 30 }}
+                        >
+                            {ticket.numero}
+                        </Text>
+                    </Col>
+                </Row>
+            }
             <Row>
                 <Col offset={18} span={6} align="right">
                     <Button
                         onClick={siguienteTicket}
                         shape="round"
-                        type="primary"
-                    >
+                        type="primary">
                         <RightOutlined />
+                            Siguiente
                     </Button>
                 </Col>
             </Row>
+
+
         </>
     )
 }

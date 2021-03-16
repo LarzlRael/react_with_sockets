@@ -1,13 +1,16 @@
 import React from 'react'
 import "antd/dist/antd.css";
 
-import { RouterPages } from './pages/RouterPages'
+import { SocketProvider } from './context/SocketContext';
 import { UIProvider } from './context/UIContest';
+import { RouterPages } from './pages/RouterPages'
 
 export const TicketApp = () => {
     return (
-        <UIProvider>
-            <RouterPages />
-        </UIProvider>
+        <SocketProvider>
+            <UIProvider>
+                <RouterPages />
+            </UIProvider>
+        </SocketProvider>
     )
 }
