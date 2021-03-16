@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <title>SocketIO</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <hr>
+
+        <form action="" id="miFormulario">
+            <div class="row">
+                <div class="col-8">
+                    <input type="text" id="txtMensaje" class="form-control" placeholder="Mensaje">
+                </div>
+                <div class="col-4">
+                    <button type="submit"" class=" btn btn-primary">
+                        Enviar
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="row">
+            <div class="col">
+                <ul id="misMensajes">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"
+        integrity="sha512-74AKPNm8Tfd5E9c4otg7XNkIVfIe5ynON7wehpX/9Tv5VYcZvXZBAlcgOAjLHg6HeWyLujisAnle6+iKnyWd9Q=="
+        crossorigin="anonymous"></script>
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>
