@@ -1,8 +1,12 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import mapboxgl from 'mapbox-gl';
+
 import { v4 } from 'uuid';
 import { Subject } from 'rxjs';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
+
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY;
 
@@ -27,11 +31,13 @@ export const useMapBox = (initialPoint) => {
 
     //? function to add markers
 
-    const agregarMarcador = useCallback((ev) => {
-        const { lng, lat } = ev.lngLat;
+    const agregarMarcador = useCallback((ev, id) => {
+        const { lng, lat } = ev.lngLat || ev;
 
         const marker = new mapboxgl.Marker();
-        marker.id = v4();
+
+        // si no tiene el id usa el v4()
+        marker.id = id ?? v4();
 
         marker
             .setLngLat([lng, lat])
@@ -42,14 +48,16 @@ export const useMapBox = (initialPoint) => {
         marcadores.current[marker.id] = marker;
 
         //TODO si el marcador tiene ID no emitir
-        nuevoMarcador.current.next({
-            id: marker.id,
-            lng,
-            lat
-        });
+        if (!id) {
+            nuevoMarcador.current.next({
+                id: marker.id,
+                lng,
+                lat
+            });
+
+        }
 
         // escuchar movimientos del marcador
-
         marker.on('drag', ({ target }) => {
             const { id } = target;
             const { lng, lat } = target.getLngLat();
@@ -61,6 +69,16 @@ export const useMapBox = (initialPoint) => {
         });
 
     }, []);
+
+    // function to update the marker ubication
+
+    const actualizarMarcador = useCallback(({ id, lng, lat }) => {
+
+
+        // funcion propia de mapbox
+        marcadores.current[id].setLngLat([lng, lat]);
+
+    }, [])
 
     useEffect(() => {
         const map = new mapboxgl.Map({
@@ -99,11 +117,14 @@ export const useMapBox = (initialPoint) => {
     }, [agregarMarcador]);
 
     return {
+        // states
         coords,
         marcadores,
         nuevoMarcador$: nuevoMarcador.current,
         movimientoMarcador$: movimientoMarcador.current,
+        // functions
         setRef,
         agregarMarcador,
+        actualizarMarcador
     }
 }

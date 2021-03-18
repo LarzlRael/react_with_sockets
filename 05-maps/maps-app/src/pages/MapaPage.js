@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { SocketContext } from '../context/SocketContext';
 import { useMapBox } from '../hooks/useMapBox';
-
-
 
 
 const initialPoint = {
@@ -12,29 +11,56 @@ const initialPoint = {
 
 const MapaPage = () => {
 
+    const { socket } = useContext(SocketContext);
 
     const { setRef, coords, nuevoMarcador$,
-        movimientoMarcador$ } = useMapBox(initialPoint);
+        movimientoMarcador$, agregarMarcador, actualizarMarcador } = useMapBox(initialPoint);
 
+    // Escuchar los marcadores existentes
+    useEffect(() => {
+        socket.on('marcadores-activos', (marcadores) => {
+            for (const key of Object.keys(marcadores)) {
+                agregarMarcador(marcadores[key], key);
+            }
+        })
+        //agregarMarcador(marcadores)
+    }, [socket, agregarMarcador])
+
+    // nuevoMarcador
     useEffect(() => {
 
         nuevoMarcador$.subscribe(marcador => {
-            // console.log('Mapa page')
-            // console.log(marcador);
-
+            socket.emit('marcador-nuevo', marcador);
         })
 
-    }, [nuevoMarcador$]);
+    }, [nuevoMarcador$, socket]);
 
     useEffect(() => {
 
         movimientoMarcador$.subscribe(marcador => {
-            // console.log('Mapa page')
-            // console.log(marcador.id);
+            socket.emit('marcador-actualizado', marcador);
+        });
 
-        })
+    }, [socket, movimientoMarcador$]);
 
-    }, [movimientoMarcador$]);
+    useEffect(() => {
+
+        socket.on('marcador-nuevo', (marcador) => {
+            agregarMarcador(marcador, marcador.id);
+        });
+
+    }, [socket, agregarMarcador]);
+
+
+    //? Mover marcador mediante sockets
+    useEffect(() => {
+        
+        socket.on('marcador-actualizado', (marcador) => {
+            actualizarMarcador(marcador);
+        });
+
+    }, [socket, actualizarMarcador]);
+
 
 
     return (
