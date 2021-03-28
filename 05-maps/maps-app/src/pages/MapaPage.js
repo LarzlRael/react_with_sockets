@@ -13,8 +13,9 @@ const MapaPage = () => {
 
     const { socket } = useContext(SocketContext);
 
-    const { setRef, coords, nuevoMarcador$,
-        movimientoMarcador$, agregarMarcador, actualizarMarcador } = useMapBox(initialPoint);
+    const { coords,
+        nuevoMarcador$, movimientoMarcador$,
+        agregarMarcador, actualizarMarcador, setRef } = useMapBox(initialPoint);
 
     // Escuchar los marcadores existentes
     useEffect(() => {
@@ -54,7 +55,7 @@ const MapaPage = () => {
 
     //? Mover marcador mediante sockets
     useEffect(() => {
-        
+
         socket.on('marcador-actualizado', (marcador) => {
             actualizarMarcador(marcador);
         });
